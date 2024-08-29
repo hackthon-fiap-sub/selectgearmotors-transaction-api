@@ -60,7 +60,7 @@
         <sonar.sources>src,pom.xml</sonar.sources>
         <sonar.test.inclusions>src/test/**/*</sonar.test.inclusions>
         <sonar.tests>src</sonar.tests>
-        <sonar.organization>fiapg70</sonar.organization>
+        <sonar.organization>hackthon-fiap-sub</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
