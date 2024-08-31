@@ -5,4 +5,5 @@ import br.com.selectgearmotors.transaction.core.domain.Transaction;
 public interface FindByIdTransactionPort {
     Transaction findById(Long id);
     Transaction findByCode(String code);
+    Transaction findByVehicleCode(String vehicleCode);
 }

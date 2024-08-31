@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Transaction", requiredProperties = {"id, code, name, price, productCategory, restaurant"})
+@Schema(description = "Transaction", requiredProperties = {"id, code, vehicleCode, clientCode, price, transactionStatus, transactionTypeId"})
 @Tag(name = "Transaction", description = "Model")
 public class Transaction implements Serializable {
 
@@ -32,11 +32,11 @@ public class Transaction implements Serializable {
 
     @Schema(description = "name of the Transaction.",
             example = "V$")
-    private Long vehicleId;
+    private String vehicleCode;
 
     @Schema(description = "name of the Transaction.",
             example = "V$")
-    private Long clientId;
+    private String clientCode;
 
     @Schema(description = "price of the Transaction.",
             example = "V$")
@@ -56,8 +56,8 @@ public class Transaction implements Serializable {
     public void update(Long id, Transaction transaction) {
         this.id = id;
         this.code = transaction.getCode();
-        this.vehicleId = transaction.getVehicleId();
-        this.clientId = transaction.getClientId();
+        this.vehicleCode = transaction.getVehicleCode();
+        this.clientCode = transaction.getClientCode();
         this.price = transaction.getPrice();
         this.transactionStatus = transaction.getTransactionStatus();
         this.transactionTypeId = transaction.getTransactionTypeId();

@@ -1,23 +1,37 @@
 package br.com.selectgearmotors.transaction.gateway.vehicle;
 
 import br.com.selectgearmotors.transaction.gateway.dto.VehicleDTO;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class VehicleWebClient {
 
-    private final WebClient webClient;
+    @Value("${gateway.vehicle.url}")
+    private String baseUrl;
+
+    private WebClient webClient;
 
     public VehicleWebClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:9914/api/v1").build();
+        this.webClient = webClientBuilder.build();
     }
 
-    public VehicleDTO get(String clientId) {
+    @PostConstruct
+    private void init() {
+        this.webClient = this.webClient.mutate().baseUrl(baseUrl).build();
+    }
+
+    public VehicleDTO get(String clientCode) {
         return webClient.get()
-                .uri("/clients/code/{clientId}", clientId)
+                .uri("/vehicles/code/{clientCode}", clientCode)
                 .retrieve()
                 .bodyToMono(VehicleDTO.class)
                 .block();
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 }

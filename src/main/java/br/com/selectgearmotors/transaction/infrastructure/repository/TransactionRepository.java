@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
     TransactionEntity findByCode(String code);
+    TransactionEntity findByVehicleCode(String vehicleCode);
 }

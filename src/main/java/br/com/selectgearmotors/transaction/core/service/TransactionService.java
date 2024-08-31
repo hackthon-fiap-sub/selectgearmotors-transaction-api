@@ -49,6 +49,11 @@ public class TransactionService implements CreateTransactionPort, UpdateTransact
     }
 
     @Override
+    public Transaction findByVehicleCode(String vehicleCode) {
+        return transactionRepository.findByVehicleCode(vehicleCode);
+    }
+
+    @Override
     public List<Transaction> findAll() {
         return transactionRepository.findAll();
     }

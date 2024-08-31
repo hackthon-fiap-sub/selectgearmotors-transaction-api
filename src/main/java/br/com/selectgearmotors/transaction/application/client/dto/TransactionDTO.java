@@ -1,8 +1,7 @@
-package br.com.selectgearmotors.transaction.application.api.dto.response;
+package br.com.selectgearmotors.transaction.application.client.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +14,9 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "TransactionResponse", requiredProperties = {"id", "name", "description", "price", "pic", "productCategoryId", "restaurantId"})
-@Tag(name = "TransactionResponse", description = "Model")
-public class TransactionResponse implements Serializable {
+@Schema(description = "TransactionDTO", requiredProperties = {"id", "name", "description", "price", "pic", "productCategoryId", "restaurantId"})
+@Tag(name = "TransactionDTO", description = "Model")
+public class TransactionDTO implements Serializable  {
 
     @Schema(description = "Unique identifier of the Driver.",
             example = "1")
@@ -25,11 +24,11 @@ public class TransactionResponse implements Serializable {
 
     @Schema(description = "Name of the Transaction.",
             example = "Coca-cola")
-    private Long vehicleCode;
+    private Long vehicleId;
 
     @Schema(description = "Description of the Transaction.",
             example = "Coca-cola !L")
-    private Long clientCode;
+    private Long clientId;
 
     private String code;
 

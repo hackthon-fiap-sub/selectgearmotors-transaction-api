@@ -5,9 +5,10 @@ import lombok.Data;
 @Data
 public class ClientDTO {
     private Long id;
+    private String code;
     private String name;
-    private String documentId;
+    private String description;
     private String email;
-    private String phone;
-    private String status;
+    private String socialId;
+    private String mobile;
 }

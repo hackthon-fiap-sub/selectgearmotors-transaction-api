@@ -11,4 +11,5 @@ public interface TransactionRepositoryPort {
     List<Transaction> findAll();
     Transaction update(Long id, Transaction transaction);
     Transaction findByCode(String code);
+    Transaction findByVehicleCode(String vehicleCode);
 }

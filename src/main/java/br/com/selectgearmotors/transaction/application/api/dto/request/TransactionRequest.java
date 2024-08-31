@@ -25,21 +25,15 @@ public class TransactionRequest implements Serializable {
 
     @Schema(description = "Name of the Transaction.",
             example = "Coca-cola")
-    @Size(min = 3, max = 255)
-    private Long vehicleId;
+    private String vehicleCode;
 
     @Schema(description = "Description of the Transaction.",
             example = "Coca-cola !L")
-    @Size(min = 0, max = 255)
-    private Long clientId;
+    private String clientCode;
 
     @Schema(description = "Price of the Transaction.",
             example = "9.00")
     private BigDecimal price;
-
-    @Schema(description = "Picture of the Transaction.",
-            example = "/home/pic/bebida.png")
-    private String pic;
 
     private String transactionStatus;
 

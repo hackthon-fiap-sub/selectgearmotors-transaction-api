@@ -1,8 +1,7 @@
-package br.com.selectgearmotors.transaction.application.api.dto.response;
+package br.com.selectgearmotors.transaction.application.api.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +14,9 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "TransactionResponse", requiredProperties = {"id", "name", "description", "price", "pic", "productCategoryId", "restaurantId"})
-@Tag(name = "TransactionResponse", description = "Model")
-public class TransactionResponse implements Serializable {
+@Schema(description = "TransactionCreateRequest", requiredProperties = {"id", "vehicleCode", "clientCode", "transactionTypeId"})
+@Tag(name = "TransactionCreateRequest", description = "Model")
+public class TransactionCreateRequest implements Serializable {
 
     @Schema(description = "Unique identifier of the Driver.",
             example = "1")
@@ -25,22 +24,13 @@ public class TransactionResponse implements Serializable {
 
     @Schema(description = "Name of the Transaction.",
             example = "Coca-cola")
-    private Long vehicleCode;
+    private String vehicleCode;
 
     @Schema(description = "Description of the Transaction.",
             example = "Coca-cola !L")
-    private Long clientCode;
-
-    private String code;
-
-    @Schema(description = "Price of the Transaction.",
-            example = "9.00")
-    private BigDecimal price;
-
-    private String transactionStatus;
+    private String clientCode;
 
     @Schema(description = "Transaction Category of the Transaction.",
             example = "Bebida", ref = "TransactionType")
     private Long transactionTypeId;
-
 }

@@ -42,13 +42,13 @@ public class TransactionEntity extends AuditDomain {
 
     @Schema(description = "name of the Transaction.",
             example = "V$")
-    @Column(name = "vehicle_id")
-    private Long vehicleId;
+    @Column(name = "vehicle_code")
+    private String vehicleCode;
 
     @Schema(description = "name of the Transaction.",
             example = "V$")
-    @Column(name = "client_id")
-    private Long clientId;
+    @Column(name = "client_code")
+    private String clientCode;
 
     @Schema(description = "price of the Transaction.",
             example = "V$")
@@ -73,8 +73,8 @@ public class TransactionEntity extends AuditDomain {
     public void update(Long id, TransactionEntity transactionEntity) {
         this.id = id;
         this.code = transactionEntity.getCode();
-        this.vehicleId = transactionEntity.getVehicleId();
-        this.clientId = transactionEntity.getClientId();
+        this.vehicleCode = transactionEntity.getVehicleCode();
+        this.clientCode = transactionEntity.getClientCode();
         this.price = transactionEntity.getPrice();
         this.transactionStatus = transactionEntity.getTransactionStatus();
         this.transactionType = transactionEntity.getTransactionType();

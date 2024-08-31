@@ -1,8 +1,8 @@
 create table transactions.tb_transaction (
     id bigserial not null,
     code varchar(255) not null,
-    vehicle_id bigint not null,
-    client_id bigint not null,
+    vehicle_code varchar(255) not null,
+    client_code varchar(255) not null,
     price numeric(19,2) not null,
     transaction_status varchar(255) not null,
     transaction_type_id bigint not null,

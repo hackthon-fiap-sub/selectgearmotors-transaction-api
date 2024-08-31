@@ -57,8 +57,8 @@ class TransactionRepositoryTest {
         return TransactionEntity.builder()
                 .code(UUID.randomUUID().toString())
                 .transactionType(transactionTypeEntity)
-                .vehicleId(1l)
-                .clientId(1l)
+                .vehicleCode(UUID.randomUUID().toString())
+                .clientCode(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -66,8 +66,8 @@ class TransactionRepositoryTest {
         return TransactionEntity.builder()
                 .code(UUID.randomUUID().toString())
                 .transactionType(transactionTypeEntity)
-                .vehicleId(1l)
-                .clientId(1l)
+                .vehicleCode(UUID.randomUUID().toString())
+                .clientCode(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -75,8 +75,8 @@ class TransactionRepositoryTest {
         return TransactionEntity.builder()
                 .code(UUID.randomUUID().toString())
                 .transactionType(transactionTypeEntity)
-                .vehicleId(1l)
-                .clientId(1l)
+                .vehicleCode(UUID.randomUUID().toString())
+                .clientCode(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -191,8 +191,8 @@ class TransactionRepositoryTest {
     void testSaveRestaurantWithLongName() {
         TransactionEntity productEntity = new TransactionEntity();
         productEntity.setCode(UUID.randomUUID().toString());
-        productEntity.setClientId(1l);
-        productEntity.setVehicleId(1l);
+        productEntity.setClientCode(UUID.randomUUID().toString());
+        productEntity.setVehicleCode(UUID.randomUUID().toString());
         productEntity.setPrice(BigDecimal.TEN);
         productEntity.setTransactionType(this.transactionTypeEntity);
 

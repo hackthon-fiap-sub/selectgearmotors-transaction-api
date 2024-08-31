@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Transaction", requiredProperties = {"id, code, name, price, productCategory, restaurant"})
+@Schema(description = "Transaction", requiredProperties = {"id, name"})
 @Tag(name = "Transaction", description = "Model")
 public class TransactionType implements Serializable {
 

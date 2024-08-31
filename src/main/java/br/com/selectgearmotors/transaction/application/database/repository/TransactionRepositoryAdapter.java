@@ -87,4 +87,10 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
         TransactionEntity byCode = transactionRepository.findByCode(code);
         return transactionMapper.fromEntityToModel(byCode);
     }
+
+    @Override
+    public Transaction findByVehicleCode(String vehicleCode) {
+        TransactionEntity byCode = transactionRepository.findByVehicleCode(vehicleCode);
+        return transactionMapper.fromEntityToModel(byCode);
+    }
 }
