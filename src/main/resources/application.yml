@@ -94,6 +94,8 @@ gateway:
     url: ${API_GATEWAY_CLIENT_URL}
   vehicle:
     url: ${API_GATEWAY_VEHICLE_URL}
+  payment:
+    url: ${API_GATEWAY_PAYMENT_URL}
 ---
 spring:
   application:

@@ -11,5 +11,8 @@ create table transactions.tb_transaction (
     last_modified_by varchar(255),
     last_modified_date timestamp(6),
     status varchar(255) not null,
-    primary key (id)
+    primary key (id),
+    CONSTRAINT fk_transaction_type FOREIGN KEY (transaction_type_id) REFERENCES transactions.tb_transaction_type(id)
 );
+
+CREATE UNIQUE INDEX constraint_vehicle_code ON transactions.tb_transaction(vehicle_code);
