@@ -25,11 +25,11 @@ public class TransactionResponse implements Serializable {
 
     @Schema(description = "Name of the Transaction.",
             example = "Coca-cola")
-    private Long vehicleCode;
+    private String vehicleCode;
 
     @Schema(description = "Description of the Transaction.",
             example = "Coca-cola !L")
-    private Long clientCode;
+    private String clientCode;
 
     private String code;
 

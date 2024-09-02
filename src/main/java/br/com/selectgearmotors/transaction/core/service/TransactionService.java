@@ -55,7 +55,13 @@ public class TransactionService implements CreateTransactionPort, UpdateTransact
 
     @Override
     public List<Transaction> findAll() {
-        return transactionRepository.findAll();
+        try {
+            return transactionRepository.findAll();
+        } catch (Exception e) {
+            log.error("Erro ao buscar produtos: {}", e.getMessage());
+        }
+
+        return null;
     }
 
     @Override

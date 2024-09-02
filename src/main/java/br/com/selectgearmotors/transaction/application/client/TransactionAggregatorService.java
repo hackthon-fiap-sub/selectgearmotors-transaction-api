@@ -2,6 +2,9 @@ package br.com.selectgearmotors.transaction.application.client;
 
 import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionCreateRequest;
 import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionRequest;
+import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionPaymentResponse;
+import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionResponse;
+import br.com.selectgearmotors.transaction.application.api.mapper.TransactionApiMapper;
 import br.com.selectgearmotors.transaction.application.client.dto.TransactionDTO;
 import br.com.selectgearmotors.transaction.application.database.repository.TransactionRepositoryAdapter;
 import br.com.selectgearmotors.transaction.core.domain.Transaction;
@@ -28,16 +31,18 @@ public class TransactionAggregatorService {
     private final ClientWebClient clientWebClient;
     private final VehicleWebClient vehicleWebClient;
     private final FindByIdTransactionPort findByIdTransactionPort;
+    private final TransactionApiMapper transactionApiMapper;
 
-    public TransactionAggregatorService(TransactionRepositoryAdapter transactionRepositoryAdapter, PaymentWebClient paymentWebClient, ClientWebClient clientWebClient, VehicleWebClient vehicleWebClient, FindByIdTransactionPort findByIdTransactionPort) {
+    public TransactionAggregatorService(TransactionRepositoryAdapter transactionRepositoryAdapter, PaymentWebClient paymentWebClient, ClientWebClient clientWebClient, VehicleWebClient vehicleWebClient, FindByIdTransactionPort findByIdTransactionPort, TransactionApiMapper transactionApiMapper) {
         this.transactionRepositoryAdapter = transactionRepositoryAdapter;
         this.paymentWebClient = paymentWebClient;
         this.clientWebClient = clientWebClient;
         this.vehicleWebClient = vehicleWebClient;
         this.findByIdTransactionPort = findByIdTransactionPort;
+        this.transactionApiMapper = transactionApiMapper;
     }
 
-    public Transaction createTransaction(TransactionCreateRequest request) {
+    public TransactionPaymentResponse createTransaction(TransactionCreateRequest request) {
         try {
             Transaction byVehicleCode = findByIdTransactionPort.findByVehicleCode(request.getVehicleCode());
             if (byVehicleCode != null) {
@@ -56,20 +61,26 @@ public class TransactionAggregatorService {
             transaction.setTransactionTypeId(request.getTransactionTypeId());
             transaction.setCode(UUID.randomUUID().toString());
 
-            Transaction save = transactionRepositoryAdapter.save(transaction);
-            createPayment(save);
+            Transaction transactionSaved = transactionRepositoryAdapter.save(transaction);
+            PaymentResponseDto paymentResponseDto = createPayment(transactionSaved);
+            transactionSaved.setTransactionStatus(paymentResponseDto.getTransactionStatus());
+
+            TransactionResponse transactionResponse = transactionApiMapper.fromEntity(transactionSaved);
+
+            return TransactionPaymentResponse.builder()
+                    .transactionData(transactionResponse)
+                    .paymentData(paymentResponseDto)
+                    .build();
         } catch (Exception e) {
             log.info("Erro ao salvar transação: " + e.getMessage());
             throw new IllegalStateException("Erro ao criar transação");
         }
-
-        return null;
     }
 
-    private void createPayment(Transaction transaction) {
+    private PaymentResponseDto createPayment(Transaction transaction) {
         // Preparar o payload para o serviço de pagamento
         PaymentDto paymentDto = PaymentDto.builder()
-                .orderId(transaction.getCode())
+                .transactionId(transaction.getCode())
                 .clientId(transaction.getClientCode())
                 .transactionAmount(transaction.getPrice())
                 .build();
@@ -90,11 +101,14 @@ public class TransactionAggregatorService {
                 default -> throw new IllegalStateException("Status de pagamento inválido: " + status);
             }
 
-            transaction.setTransactionStatus(transactionStatus.name());
+            paymentResponseDto.setTransactionStatus(transaction.getTransactionStatus());
+            return paymentResponseDto;
         } catch (Exception e) {
             // Log de erro e tratamento de exceção
-            throw new IllegalStateException("Erro ao chamar o serviço de pagamento: " + e.getMessage());
+            log.error("Erro ao chamar o serviço de pagamento: " + e.getMessage());
         }
+
+        return null;
     }
 
     public TransactionDTO getTransaction(Long transactionId) {

@@ -2,6 +2,7 @@ package br.com.selectgearmotors.transaction.application.api.resources;
 
 import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionCreateRequest;
 import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionRequest;
+import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionPaymentResponse;
 import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionResponse;
 import br.com.selectgearmotors.transaction.application.api.exception.ResourceFoundException;
 import br.com.selectgearmotors.transaction.application.api.mapper.TransactionApiMapper;
@@ -10,14 +11,15 @@ import br.com.selectgearmotors.transaction.application.client.dto.TransactionDTO
 import br.com.selectgearmotors.transaction.commons.Constants;
 import br.com.selectgearmotors.transaction.commons.util.RestUtils;
 import br.com.selectgearmotors.transaction.core.domain.Transaction;
-import br.com.selectgearmotors.transaction.core.ports.in.transaction.*;
+import br.com.selectgearmotors.transaction.core.ports.in.transaction.DeleteTransactionPort;
+import br.com.selectgearmotors.transaction.core.ports.in.transaction.FindByIdTransactionPort;
+import br.com.selectgearmotors.transaction.core.ports.in.transaction.FindTransactionsPort;
+import br.com.selectgearmotors.transaction.core.ports.in.transaction.UpdateTransactionPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,18 +58,16 @@ public class TransactionResources {
     @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TransactionResponse> save(@Valid @RequestBody TransactionCreateRequest request) {
+    public ResponseEntity<TransactionPaymentResponse> save(@Valid @RequestBody TransactionCreateRequest request) {
         try {
             log.info("Chegada do objeto para ser salvo {}", request);
-            Transaction saved = transactionAggregatorService.createTransaction(request);
+            TransactionPaymentResponse saved = transactionAggregatorService.createTransaction(request);
             if (saved == null) {
                 throw new ResourceFoundException("Produto não encontroado ao cadastrar");
             }
 
-            TransactionResponse transactionResponse = transactionApiMapper.fromEntity(saved);
-            URI location = RestUtils.getUri(transactionResponse.getId());
-
-            return ResponseEntity.created(location).body(transactionResponse);
+            URI location = RestUtils.getUri(saved.getTransactionData().getId());
+            return ResponseEntity.created(location).body(saved);
         } catch (Exception ex) {
             log.error(Constants.ERROR_EXCEPTION_RESOURCE + "-save: {}", ex.getMessage());
             return ResponseEntity.ok().build();

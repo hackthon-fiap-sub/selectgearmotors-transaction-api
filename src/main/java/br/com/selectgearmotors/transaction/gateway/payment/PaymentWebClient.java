@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 public class PaymentWebClient {
 
-    @Value("${app.payment-rest.url}")
+    @Value("${gateway.payment.url}")
     private String url;
 
     private final WebClient.Builder webClientBuilder;

@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class PaymentDto {
     private BigDecimal transactionAmount;
-    private String description;
     private String clientId;
-    private String orderId;
+    private String transactionId;
 }
