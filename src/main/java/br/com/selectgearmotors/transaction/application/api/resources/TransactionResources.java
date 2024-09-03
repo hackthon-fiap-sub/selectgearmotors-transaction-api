@@ -172,7 +172,6 @@ public class TransactionResources {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TransactionResponse> findByCode(@PathVariable("code") String code) {
         try {
-
             Transaction transactionSaved = findByIdTransactionPort.findByCode(code);
             if (transactionSaved == null) {
                 throw new ResourceFoundException("Produto não encontrado ao buscar por código");

@@ -31,3 +31,6 @@ http://localhost:9914/api/swagger-ui/index.html#/
 http://localhost:9914/api/v3/api-docs
 
 docker run -u zap -p 8080:8080 -v "$(pwd)/docs/zap_workdir:/zap/wrk" -i ghcr.io/zaproxy/zaproxy:stable zap-api-scan.py -t http://192.168.100.31:9924/api/v3/api-docs -f openapi -c zap-rules.conf -r zap_report_antes_op1.html
+
+#Criar ELK - logs
+https://medium.com/@lahiruchandika/integrate-elk-stack-into-spring-boot-application-4991e7918c3a
