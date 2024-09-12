@@ -30,9 +30,15 @@ public class TransactionCreateRequest implements Serializable {
             example = "Coca-cola !L")
     private String clientCode;
 
+    @Schema(description = "Description of the Transaction.",
+            example = "Coca-cola !L")
+    private String carSellerCode;
+
     @Schema(description = "Transaction Category of the Transaction.",
             example = "Bebida", ref = "TransactionType")
     private Long transactionTypeId;
 
     private String personType;
+
+    private BigDecimal price;
 }

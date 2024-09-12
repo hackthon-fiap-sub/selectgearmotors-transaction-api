@@ -30,6 +30,10 @@ public class TransactionDTO implements Serializable  {
             example = "Coca-cola !L")
     private Long clientId;
 
+    @Schema(description = "Description of the Transaction.",
+            example = "Coca-cola !L")
+    private Long carSellerId;
+
     private String code;
 
     @Schema(description = "Price of the Transaction.",

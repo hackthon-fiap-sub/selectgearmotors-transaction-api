@@ -9,10 +9,8 @@ import br.com.selectgearmotors.transaction.application.database.repository.Trans
 import br.com.selectgearmotors.transaction.core.domain.Transaction;
 import br.com.selectgearmotors.transaction.core.ports.in.transaction.FindByIdTransactionPort;
 import br.com.selectgearmotors.transaction.gateway.client.ClientWebClient;
-import br.com.selectgearmotors.transaction.gateway.dto.ClientResponseDTO;
-import br.com.selectgearmotors.transaction.gateway.dto.PaymentDto;
-import br.com.selectgearmotors.transaction.gateway.dto.PaymentResponseDto;
-import br.com.selectgearmotors.transaction.gateway.dto.VehicleResponseDTO;
+import br.com.selectgearmotors.transaction.gateway.company.CarSellerWebClient;
+import br.com.selectgearmotors.transaction.gateway.dto.*;
 import br.com.selectgearmotors.transaction.gateway.payment.PaymentWebClient;
 import br.com.selectgearmotors.transaction.gateway.vehicle.VehicleWebClient;
 import br.com.selectgearmotors.transaction.infrastructure.entity.domain.TransactionStatus;
@@ -29,14 +27,16 @@ public class TransactionAggregatorService {
     private final PaymentWebClient paymentWebClient;
     private final ClientWebClient clientWebClient;
     private final VehicleWebClient vehicleWebClient;
+    private final CarSellerWebClient carSellerWebClient;
     private final FindByIdTransactionPort findByIdTransactionPort;
     private final TransactionApiMapper transactionApiMapper;
 
-    public TransactionAggregatorService(TransactionRepositoryAdapter transactionRepositoryAdapter, PaymentWebClient paymentWebClient, ClientWebClient clientWebClient, VehicleWebClient vehicleWebClient, FindByIdTransactionPort findByIdTransactionPort, TransactionApiMapper transactionApiMapper) {
+    public TransactionAggregatorService(TransactionRepositoryAdapter transactionRepositoryAdapter, PaymentWebClient paymentWebClient, ClientWebClient clientWebClient, VehicleWebClient vehicleWebClient, CarSellerWebClient carSellerWebClient, FindByIdTransactionPort findByIdTransactionPort, TransactionApiMapper transactionApiMapper) {
         this.transactionRepositoryAdapter = transactionRepositoryAdapter;
         this.paymentWebClient = paymentWebClient;
         this.clientWebClient = clientWebClient;
         this.vehicleWebClient = vehicleWebClient;
+        this.carSellerWebClient = carSellerWebClient;
         this.findByIdTransactionPort = findByIdTransactionPort;
         this.transactionApiMapper = transactionApiMapper;
     }
@@ -50,15 +50,18 @@ public class TransactionAggregatorService {
             // Buscar dados do veículo
             VehicleResponseDTO vehicleResponseDTO = getVehicleDTO(request.getVehicleCode());
             ClientResponseDTO clientResponseDTO = getClientDTO(request.getClientCode());
+            CarSellerResponseDTO carSellerDTO = getCarSellerDTO(request.getCarSellerCode());
 
             // Criar transação Inicial
             Transaction transaction = new Transaction();
             transaction.setVehicleCode(vehicleResponseDTO.getCode());
             transaction.setClientCode(clientResponseDTO.getCode());
-            transaction.setPrice(vehicleResponseDTO.getPrice());
+            transaction.setCarSellerCode(carSellerDTO.getCode());
+            transaction.setPrice(request.getPrice());
             transaction.setTransactionStatus(TransactionStatus.RESERVED.name());
             transaction.setTransactionTypeId(request.getTransactionTypeId());
             transaction.setCode(UUID.randomUUID().toString());
+            transaction.setPersonType(request.getPersonType());
 
             Transaction transactionSaved = transactionRepositoryAdapter.save(transaction);
             transactionSaved.setPersonType(request.getPersonType());
@@ -120,15 +123,18 @@ public class TransactionAggregatorService {
 
         VehicleResponseDTO vehicleResponseDTO = getVehicleDTO(transaction.getVehicleCode());
         ClientResponseDTO clientResponseDTO = getClientDTO(transaction.getClientCode());
+        CarSellerResponseDTO carSellerDTO = getCarSellerDTO(transaction.getCarSellerCode());
 
         TransactionDTO transactionDTO = TransactionDTO.builder()
                 .id(transaction.getId())
                 .vehicleId(vehicleResponseDTO.getId())
                 .clientId(clientResponseDTO.getId())
+                .carSellerId(carSellerDTO.getId())
                 .price(transaction.getPrice())
                 .transactionStatus(transaction.getTransactionStatus())
                 .transactionTypeId(transaction.getTransactionTypeId())
                 .build();
+
         log.info("Transação encontrada: " + transactionDTO);
         return transactionDTO;
     }
@@ -147,6 +153,14 @@ public class TransactionAggregatorService {
             throw new IllegalStateException("Comprador não encontrado");
         }
         return clientResponseDTO;
+    }
+
+    private CarSellerResponseDTO getCarSellerDTO(String carSellerCode) {
+        CarSellerResponseDTO carSellerResponseDTO = carSellerWebClient.get(carSellerCode);
+        if (carSellerResponseDTO == null) {
+            throw new IllegalStateException("Vendedor não encontrado");
+        }
+        return carSellerResponseDTO;
     }
 
 }

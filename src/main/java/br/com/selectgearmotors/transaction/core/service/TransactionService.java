@@ -69,7 +69,6 @@ public class TransactionService implements CreateTransactionPort, UpdateTransact
             resultById.update(resultById.getId(), resultById);
 
             Transaction transactionSaved = transactionRepository.save(resultById);
-            //TODO: Se o status for confirmado para pagamenento, enviar nas filas SQS de gerar documentação e enviar sms
 
             String clientCode = resultById.getClientCode();
             String vehicleCode = resultById.getVehicleCode();
@@ -86,15 +85,24 @@ public class TransactionService implements CreateTransactionPort, UpdateTransact
     }
 
     private void sendDocument(String transactionCode, String sellerCode, String clientCode, String vehicleCode) {
-        ClientResponseDTO clientResponseDTO = getClientData(clientCode);
-        VehicleResponseDTO vehicleData = getVehicleData(vehicleCode);
-        CarSellerResponseDTO carSellerResponseDTO = getSellerData(sellerCode);
+        try{
+            if (transactionCode == null || sellerCode == null || clientCode == null || vehicleCode == null) {
+                throw new ResourceFoundException("Transaction not found");
+            }
 
-        VehicleDTO vehicleDTO = getVehicleDTO(vehicleData);
-        String sellerName = carSellerResponseDTO.getName();
+            ClientResponseDTO clientResponseDTO = getClientData(clientCode);
+            VehicleResponseDTO vehicleData = getVehicleData(vehicleCode);
+            CarSellerResponseDTO carSellerResponseDTO = getSellerData(sellerCode);
 
-        DocumentDTO document = getDocumentDTO(transactionCode, sellerName, clientResponseDTO, vehicleDTO);
-        documentSenderAdapter.sendMessage(document);
+            VehicleDTO vehicleDTO = getVehicleDTO(vehicleData);
+            String sellerName = carSellerResponseDTO.getName();
+
+            DocumentDTO document = getDocumentDTO(transactionCode, sellerName, clientResponseDTO, vehicleDTO);
+            documentSenderAdapter.sendMessage(document);
+            log.info("[EVENT] - Documento enviado com sucesso para o vendedor: {}", document);
+        } catch (ResourceFoundException e) {
+            log.error("[EVENT] - Erro ao enviar documento: {}", e.getMessage());
+        }
     }
 
     @Override
@@ -169,17 +177,24 @@ public class TransactionService implements CreateTransactionPort, UpdateTransact
     }
 
     private void sendNotification(String clientCode, String vehicleCode) {
-        ClientResponseDTO clientResponseDTO = getClientData(clientCode);
-        VehicleResponseDTO vehicleData = getVehicleData(vehicleCode);
+        try {
+            ClientResponseDTO clientResponseDTO = getClientData(clientCode);
+            VehicleResponseDTO vehicleData = getVehicleData(vehicleCode);
 
-        String clientMobile = PhoneNumberFormatter.formatPhoneNumber(clientResponseDTO.getMobile());
-        String message = "Compra realizada com sucesso! Veiculo: " + vehicleData.getCode() + " - Modelo: - " + vehicleData.getModelName() + " Cor: " + vehicleData.getCor() + " Ano - " + vehicleData.getVehicleYear() + " Preço: " + vehicleData.getPrice();
+            String clientMobile = PhoneNumberFormatter.formatPhoneNumber(clientResponseDTO.getMobile());
+            String message = "Compra realizada com sucesso! Veiculo: " + vehicleData.getCode() + " - Modelo: - " + vehicleData.getModelName() + " Cor: " + vehicleData.getCor() + " Ano - " + vehicleData.getVehicleYear() + " Preço: " + vehicleData.getPrice();
 
-        NotificationDTO notification = new NotificationDTO(
-                clientMobile,
-                message
-        );
-        notificationSenderAdapter.sendMessage(notification);
+            NotificationDTO notification = new NotificationDTO(
+                    clientMobile,
+                    message
+            );
+
+            notificationSenderAdapter.sendMessage(notification);
+            log.info("[EVENT] - Notificação enviada com sucesso para o cliente: {}", notification.message());
+        } catch (Exception e) {
+            log.error("[EVENT] - Erro ao enviar notificação: {}", e.getMessage());
+        }
+
     }
 
     private ClientResponseDTO getClientData(String clientCode) {
