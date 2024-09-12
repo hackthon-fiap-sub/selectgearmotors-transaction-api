@@ -13,12 +13,13 @@ docker rmi $(docker images -qa) -f
 sudo sysctl -w vm.max_map_count=262144
 
 
-docker build -t rogeriofontes/sevenfood-product-api:v3 .
+docker build -t rogeriofontes/selectgearmotors-transaction-api:v3 .
 docker login
-docker push rogeriofontes/sevenfood-product-api:v3
+docker push rogeriofontes/selectgearmotors-transaction-api:v3
 
-docker pull rogeriofontes/sevenfood-product-api:v3
-docker run -p 9924:9924 sevenfood-product-api:v3
+docker pull rogeriofontes/selectgearmotors-transaction-api:v3
+docker run -p 9934:9934 selectgearmotors-transaction-api:v3
+docker run -p 9934:9934 --env-file .env -e SPRING_PROFILES_ACTIVE=dev rogeriofontes/selectgearmotors-transaction-api:v3
 
 ====
 https://www.zaproxy.org/docs/docker/api-scan/

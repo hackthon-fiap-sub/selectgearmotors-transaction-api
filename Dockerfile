@@ -7,5 +7,9 @@ RUN mvn -B -f pom.xml clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 9991
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","app.jar"]
+EXPOSE 9934
+
+# Define a default value for the Spring profile, but allow overriding via environment variable
+ENV SPRING_PROFILES_ACTIVE=prod
+
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}","app.jar"]
