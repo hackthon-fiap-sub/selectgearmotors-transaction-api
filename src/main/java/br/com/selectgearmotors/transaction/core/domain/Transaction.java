@@ -38,6 +38,10 @@ public class Transaction implements Serializable {
             example = "V$")
     private String clientCode;
 
+    @Schema(description = "Description of the Transaction.",
+            example = "Coca-cola !L")
+    private String carSellerCode;
+
     @Schema(description = "price of the Transaction.",
             example = "V$")
     @NotNull(message = "o campo \"price\" é obrigario")
@@ -53,6 +57,8 @@ public class Transaction implements Serializable {
     @NotNull
     private Long transactionTypeId;
 
+    private String personType;
+
     public void update(Long id, Transaction transaction) {
         this.id = id;
         this.code = transaction.getCode();
@@ -61,5 +67,6 @@ public class Transaction implements Serializable {
         this.price = transaction.getPrice();
         this.transactionStatus = transaction.getTransactionStatus();
         this.transactionTypeId = transaction.getTransactionTypeId();
+        this.personType = transaction.getPersonType();
     }
 }

@@ -1,6 +1,6 @@
 package br.com.selectgearmotors.transaction.gateway.client;
 
-import br.com.selectgearmotors.transaction.gateway.dto.ClientDTO;
+import br.com.selectgearmotors.transaction.gateway.dto.ClientResponseDTO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,11 +23,11 @@ public class ClientWebClient {
         this.webClient = this.webClient.mutate().baseUrl(baseUrl).build();
     }
 
-    public ClientDTO get(String clientCode) {
+    public ClientResponseDTO get(String clientCode) {
         return webClient.get()
                 .uri("/clients/code/{clientCode}", clientCode)
                 .retrieve()
-                .bodyToMono(ClientDTO.class)
+                .bodyToMono(ClientResponseDTO.class)
                 .block();
     }
 }

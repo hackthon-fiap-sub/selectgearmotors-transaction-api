@@ -33,4 +33,6 @@ public class TransactionCreateRequest implements Serializable {
     @Schema(description = "Transaction Category of the Transaction.",
             example = "Bebida", ref = "TransactionType")
     private Long transactionTypeId;
+
+    private String personType;
 }

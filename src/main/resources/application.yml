@@ -92,10 +92,19 @@ management:
 gateway:
   client:
     url: ${API_GATEWAY_CLIENT_URL}
+  car-seller:
+    url: ${API_GATEWAY_CAR_SELLER_URL}
   vehicle:
     url: ${API_GATEWAY_VEHICLE_URL}
   payment:
     url: ${API_GATEWAY_PAYMENT_URL}
+
+aws:
+  queue:
+    document:
+      queueUrl: ${AWS_SQS_QUEUE_DOCUMENT_URL}
+    notification:
+      queueUrl: ${AWS_SQS_QUEUE_NOTIFICATION_URL}
 ---
 spring:
   application:

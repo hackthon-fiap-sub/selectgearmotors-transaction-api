@@ -50,6 +50,11 @@ public class TransactionEntity extends AuditDomain {
     @Column(name = "client_code")
     private String clientCode;
 
+    @Schema(description = "name of the Transaction.",
+            example = "V$")
+    @Column(name = "car_seller_code")
+    private String carSellerCode;
+
     @Schema(description = "price of the Transaction.",
             example = "V$")
     @NotNull(message = "o campo \"price\" é obrigario")
@@ -75,6 +80,7 @@ public class TransactionEntity extends AuditDomain {
         this.code = transactionEntity.getCode();
         this.vehicleCode = transactionEntity.getVehicleCode();
         this.clientCode = transactionEntity.getClientCode();
+        this.carSellerCode = transactionEntity.getCarSellerCode();
         this.price = transactionEntity.getPrice();
         this.transactionStatus = transactionEntity.getTransactionStatus();
         this.transactionType = transactionEntity.getTransactionType();

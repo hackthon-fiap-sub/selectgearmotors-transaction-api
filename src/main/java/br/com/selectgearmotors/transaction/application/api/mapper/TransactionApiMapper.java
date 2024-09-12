@@ -14,6 +14,7 @@ public interface TransactionApiMapper {
 
     @Mapping(source = "vehicleCode", target = "vehicleCode")
     @Mapping(source = "clientCode", target = "clientCode")
+    @Mapping(source = "carSellerCode", target = "carSellerCode")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "transactionStatus", target = "transactionStatus")
     @Mapping(source = "transactionTypeId", target = "transactionTypeId")
@@ -24,6 +25,7 @@ public interface TransactionApiMapper {
     @Mapping(target = "code", source = "code")
     @Mapping(target = "vehicleCode", source = "vehicleCode")
     @Mapping(target = "clientCode", source = "clientCode")
+    @Mapping(target = "carSellerCode", source = "carSellerCode")
     TransactionResponse fromEntity(Transaction transaction);
 
    List<TransactionResponse> map(List<Transaction> transactions);

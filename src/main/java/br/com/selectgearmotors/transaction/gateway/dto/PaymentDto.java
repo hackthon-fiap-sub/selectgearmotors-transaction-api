@@ -15,4 +15,5 @@ public class PaymentDto {
     private BigDecimal transactionAmount;
     private String clientId;
     private String transactionId;
+    private String personType;
 }

@@ -3,6 +3,7 @@ create table transactions.tb_transaction (
     code varchar(255) not null,
     vehicle_code varchar(255) not null,
     client_code varchar(255) not null,
+    car_seller_code varchar(255) not null,
     price numeric(19,2) not null,
     transaction_status varchar(255) not null,
     transaction_type_id bigint not null,
@@ -16,3 +17,5 @@ create table transactions.tb_transaction (
 );
 
 CREATE UNIQUE INDEX constraint_vehicle_code ON transactions.tb_transaction(vehicle_code);
+CREATE UNIQUE INDEX constraint_car_seller_code ON transactions.tb_transaction(car_seller_code);
+CREATE UNIQUE INDEX constraint_client_code ON transactions.tb_transaction(client_code);

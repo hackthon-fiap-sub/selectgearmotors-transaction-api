@@ -1,7 +1,6 @@
 package br.com.selectgearmotors.transaction.application.client;
 
 import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionCreateRequest;
-import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionRequest;
 import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionPaymentResponse;
 import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionResponse;
 import br.com.selectgearmotors.transaction.application.api.mapper.TransactionApiMapper;
@@ -10,10 +9,10 @@ import br.com.selectgearmotors.transaction.application.database.repository.Trans
 import br.com.selectgearmotors.transaction.core.domain.Transaction;
 import br.com.selectgearmotors.transaction.core.ports.in.transaction.FindByIdTransactionPort;
 import br.com.selectgearmotors.transaction.gateway.client.ClientWebClient;
-import br.com.selectgearmotors.transaction.gateway.dto.ClientDTO;
+import br.com.selectgearmotors.transaction.gateway.dto.ClientResponseDTO;
 import br.com.selectgearmotors.transaction.gateway.dto.PaymentDto;
 import br.com.selectgearmotors.transaction.gateway.dto.PaymentResponseDto;
-import br.com.selectgearmotors.transaction.gateway.dto.VehicleDTO;
+import br.com.selectgearmotors.transaction.gateway.dto.VehicleResponseDTO;
 import br.com.selectgearmotors.transaction.gateway.payment.PaymentWebClient;
 import br.com.selectgearmotors.transaction.gateway.vehicle.VehicleWebClient;
 import br.com.selectgearmotors.transaction.infrastructure.entity.domain.TransactionStatus;
@@ -49,19 +48,20 @@ public class TransactionAggregatorService {
                 throw new IllegalStateException("Veículo já reservado para compra");
             }
             // Buscar dados do veículo
-            VehicleDTO vehicleDTO = getVehicleDTO(request.getVehicleCode());
-            ClientDTO clientDTO = getClientDTO(request.getClientCode());
+            VehicleResponseDTO vehicleResponseDTO = getVehicleDTO(request.getVehicleCode());
+            ClientResponseDTO clientResponseDTO = getClientDTO(request.getClientCode());
 
             // Criar transação Inicial
             Transaction transaction = new Transaction();
-            transaction.setVehicleCode(vehicleDTO.getCode());
-            transaction.setClientCode(clientDTO.getCode());
-            transaction.setPrice(vehicleDTO.getPrice());
+            transaction.setVehicleCode(vehicleResponseDTO.getCode());
+            transaction.setClientCode(clientResponseDTO.getCode());
+            transaction.setPrice(vehicleResponseDTO.getPrice());
             transaction.setTransactionStatus(TransactionStatus.RESERVED.name());
             transaction.setTransactionTypeId(request.getTransactionTypeId());
             transaction.setCode(UUID.randomUUID().toString());
 
             Transaction transactionSaved = transactionRepositoryAdapter.save(transaction);
+            transactionSaved.setPersonType(request.getPersonType());
             PaymentResponseDto paymentResponseDto = createPayment(transactionSaved);
             transactionSaved.setTransactionStatus(paymentResponseDto.getTransactionStatus());
 
@@ -83,6 +83,7 @@ public class TransactionAggregatorService {
                 .transactionId(transaction.getCode())
                 .clientId(transaction.getClientCode())
                 .transactionAmount(transaction.getPrice())
+                .personType(transaction.getPersonType())
                 .build();
 
         // Chamar a API de pagamentos
@@ -117,35 +118,35 @@ public class TransactionAggregatorService {
             throw new IllegalStateException("Transação não encontrada");
         }
 
-        VehicleDTO vehicleDTO = getVehicleDTO(transaction.getVehicleCode());
-        ClientDTO clientDTO = getClientDTO(transaction.getClientCode());
+        VehicleResponseDTO vehicleResponseDTO = getVehicleDTO(transaction.getVehicleCode());
+        ClientResponseDTO clientResponseDTO = getClientDTO(transaction.getClientCode());
 
         TransactionDTO transactionDTO = TransactionDTO.builder()
                 .id(transaction.getId())
-                .vehicleId(vehicleDTO.getId())
-                .clientId(clientDTO.getId())
+                .vehicleId(vehicleResponseDTO.getId())
+                .clientId(clientResponseDTO.getId())
                 .price(transaction.getPrice())
                 .transactionStatus(transaction.getTransactionStatus())
                 .transactionTypeId(transaction.getTransactionTypeId())
                 .build();
-
+        log.info("Transação encontrada: " + transactionDTO);
         return transactionDTO;
     }
 
-    private VehicleDTO getVehicleDTO(String vehicleCode) {
-        VehicleDTO vehicleDTO = vehicleWebClient.get(vehicleCode);
-        if (vehicleDTO == null) {
+    private VehicleResponseDTO getVehicleDTO(String vehicleCode) {
+        VehicleResponseDTO vehicleResponseDTO = vehicleWebClient.get(vehicleCode);
+        if (vehicleResponseDTO == null) {
             throw new IllegalStateException("Veículo não disponível para compra");
         }
-        return vehicleDTO;
+        return vehicleResponseDTO;
     }
 
-    private ClientDTO getClientDTO(String clientCode) {
-        ClientDTO clientDTO = clientWebClient.get(clientCode);
-        if (clientDTO == null) {
+    private ClientResponseDTO getClientDTO(String clientCode) {
+        ClientResponseDTO clientResponseDTO = clientWebClient.get(clientCode);
+        if (clientResponseDTO == null) {
             throw new IllegalStateException("Comprador não encontrado");
         }
-        return clientDTO;
+        return clientResponseDTO;
     }
 
 }

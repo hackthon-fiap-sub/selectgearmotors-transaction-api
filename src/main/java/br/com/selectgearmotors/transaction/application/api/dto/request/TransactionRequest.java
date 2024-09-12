@@ -31,6 +31,10 @@ public class TransactionRequest implements Serializable {
             example = "Coca-cola !L")
     private String clientCode;
 
+    @Schema(description = "Description of the Transaction.",
+            example = "Coca-cola !L")
+    private String carSellerCode;
+
     @Schema(description = "Price of the Transaction.",
             example = "9.00")
     private BigDecimal price;

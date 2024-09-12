@@ -5,19 +5,25 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class VehicleDTO {
+public class VehicleResponseDTO {
     private Long id;
     private String code;
     private String cor;
-    private String pic;
+    private String mediaId;
     private String vehicleYear;
     private String description;
     private BigDecimal price;
-    private String vehicleStatus;
-    private Long vehicleTypeId;
-    private String vehicleTypeName;
+    private Long vehicleCategoryId;
+    private String vehicleCategoryName;
     private Long modelId;
     private String modelName;
     private Long brandId;
     private String brandName;
+    private String vehicleStatus;
+    private Long vehicleTypeId;
+    private String vehicleTypeName;
+    private String location;
+    private String plate;
+    private String chassis;
+    private String renavam;
 }

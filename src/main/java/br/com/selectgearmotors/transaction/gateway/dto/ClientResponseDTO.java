@@ -3,7 +3,7 @@ package br.com.selectgearmotors.transaction.gateway.dto;
 import lombok.Data;
 
 @Data
-public class ClientDTO {
+public class ClientResponseDTO {
     private Long id;
     private String code;
     private String name;

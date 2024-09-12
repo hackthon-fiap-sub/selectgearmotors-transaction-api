@@ -98,6 +98,28 @@ public class TransactionResources {
         }
     }
 
+    @Operation(summary = "Update a Transaction by Id", tags = {"transactions", "put"})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TransactionResources.class), mediaType = "application/json")})
+    @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})
+    @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})
+    @PutMapping("/{transactionId}/status/{status}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TransactionResponse> updateStatus(@PathVariable("transactionId") String transactionId, @PathVariable("status") String status) {
+        try {
+            Transaction updated = updateTransactionPort.updateStatus(transactionId, status);
+            if (updated == null) {
+                throw new ResourceFoundException("Produto não encontroado ao atualizar");
+            }
+
+            TransactionResponse transactionResponse = transactionApiMapper.fromEntity(updated);
+            return ResponseEntity.ok(transactionResponse);
+        } catch (Exception ex) {
+            log.error(Constants.ERROR_EXCEPTION_RESOURCE + "-update: {}", ex.getMessage());
+            return ResponseEntity.ok().build();
+        }
+    }
+
     @Operation(summary = "Retrieve all Transaction", tags = {"transactions", "get", "filter"})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = TransactionResources.class), mediaType = "application/json")})
