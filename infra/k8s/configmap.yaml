@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: selectgearmotors-transaction-api-config
+  namespace: selectgearmotors-ns
 data:
   AWS_REGION: "us-east-1"
   DATABASE_URL: "jdbc:postgresql://rds-selectgearmotors.cquezg8gsw7p.us-east-1.rds.amazonaws.com:5432/selectgearmotors-transactions-db"
