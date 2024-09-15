@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: selectgearmotors-transaction-api-config
+data:
+  AWS_REGION: "us-east-1"
+  DATABASE_URL: "jdbc:postgresql://rds-selectgearmotors.cquezg8gsw7p.us-east-1.rds.amazonaws.com:5432/selectgearmotors-transactions-db"
+  DATABASE_USERNAME: "postgres"
+  MAIL_HOST: "email-smtp.us-east-1.amazonaws.com"
+  MAIL_PORT: "587"
+  SWAGGER_API_URL: "https://192.168.100.31:9924/api"
+  ZIPKIN_URL: "http://54.82.102.109:9411/api/v2/spans"
+  API_GATEWAY_URL_PRIVACY_NOTIFICATION_STATUS: "https://umtpix5m64.execute-api.us-east-1.amazonaws.com/Prod"
+  AWS_SQS_QUEUE_ARN: "arn:aws:sqs:us-east-1:147397866377:client_erase_privacy_notification"
+  AWS_SQS_QUEUE_NAME: "client_erase_privacy_notification"
+  AWS_SQS_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/147397866377/client_erase_privacy_notification"
+  SES_SMTP_USERNAME: "AKIASEUMY6OE2F5A7KIB"
+  SNS_TOPIC_EMAIL_ARN: "arn:aws:sns:us-east-1:147397866377:send_email_recycle_mais"
+  MAIL_USERNAME: "AKIASEUMY6OE67D7LCXL"
+  API_GATEWAY_CLIENT_URL: "http://192.168.100.31:9914/api/v1"
+  API_GATEWAY_PAYMENT_URL: "http://192.168.100.31:8888/api/v1"
+  API_GATEWAY_VEHICLE_UR: "http://192.168.100.31:9924/api/v1"
+  AWS_SQS_QUEUE_DOCUMENT_URL: "https://sqs.us-east-1.amazonaws.com/147397866377/selectgearmotors-documents-queue"
+  AWS_SQS_QUEUE_NOTIFICATION_URL: "https://sqs.us-east-1.amazonaws.com/147397866377/selectgearmotors-notifications-queue"
+  API_GATEWAY_CAR_SELLER_URL: "http://192.168.100.31:9944/api/v1"

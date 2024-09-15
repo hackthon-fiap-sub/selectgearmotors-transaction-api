@@ -1,0 +1,73 @@
+name: CI/CD para AWS EKS
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do codding
+        uses: actions/checkout@v3
+
+      #- name: Decode AWS credentials from Base64
+        #run: |
+          #echo ${{ secrets.AWS_ACCESS_KEY_ID }} | base64 --decode > /tmp/aws_access_key_id
+          #echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} | base64 --decode > /tmp/aws_secret_access_key
+
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          #aws-access-key-id: $(cat aws_access_key_id.txt)
+          #aws-secret-access-key: $(cat aws_secret_access_key.txt)
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Installer Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.2.0
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Construct and enviable image Docker
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: rogeriofontes/selectgearmotors-transaction-api:v4
+
+      - name: Configure kubectl
+        run: |
+          aws eks --region us-east-1 update-kubeconfig --name selectgearmotors-eks-cluster
+
+      - name: Create Kubernetes Secret YAML
+        run: |
+          echo "apiVersion: v1
+          kind: Secret
+          metadata:
+            name: selectgearmotors-transaction-api-secrets
+          type: Opaque
+          stringData:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+            MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+            SECURITY_JWT_SECRET_KEY: ${{ secrets.SECURITY_JWT_SECRET_KEY }}" > infra/k8s/secrets.yaml
+
+      - name: Applicator ConfigMap e Secrets
+        run: |
+          kubectl apply -f infra/k8s/configmap.yaml
+          kubectl apply -f infra/k8s/secrets.yaml
+
+      - name: Implantation da API no Cluster EKS
+        run: |
+          kubectl apply -f infra/k8s/deployment.yaml -n selectgearmotors-ns
+        working-directory: ${{ github.workspace }}
