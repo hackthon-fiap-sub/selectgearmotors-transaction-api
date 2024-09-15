@@ -67,6 +67,10 @@ jobs:
           kubectl apply -f infra/k8s/configmap.yaml
           kubectl apply -f infra/k8s/secrets.yaml
 
+      - name: Apply Kubernetes Service
+        run: |
+          kubectl apply -f infra/k8s/service.yaml -n selectgearmotors-ns
+
       - name: Implantation da API no Cluster EKS
         run: |
           kubectl apply -f infra/k8s/deployment.yaml -n selectgearmotors-ns
