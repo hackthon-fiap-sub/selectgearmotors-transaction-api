@@ -20,7 +20,7 @@ data:
   MAIL_USERNAME: "AKIASEUMY6OE67D7LCXL"
   API_GATEWAY_CLIENT_URL: "http://192.168.100.31:9914/api/v1"
   API_GATEWAY_PAYMENT_URL: "http://192.168.100.31:8888/api/v1"
-  API_GATEWAY_VEHICLE_UR: "http://192.168.100.31:9924/api/v1"
+  API_GATEWAY_VEHICLE_URL: "http://192.168.100.31:9924/api/v1"
   AWS_SQS_QUEUE_DOCUMENT_URL: "https://sqs.us-east-1.amazonaws.com/147397866377/selectgearmotors-documents-queue"
   AWS_SQS_QUEUE_NOTIFICATION_URL: "https://sqs.us-east-1.amazonaws.com/147397866377/selectgearmotors-notifications-queue"
   API_GATEWAY_CAR_SELLER_URL: "http://192.168.100.31:9944/api/v1"
