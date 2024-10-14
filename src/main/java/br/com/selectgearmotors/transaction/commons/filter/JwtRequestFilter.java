@@ -22,6 +22,8 @@ import java.util.List;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    public static final String BEARER_TOKEN_ATTRIBUTE = "BEARER_TOKEN";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -34,9 +36,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String email = null;
 
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
             // Remove "Bearer " para obter o token puro
+            httpRequest.setAttribute(BEARER_TOKEN_ATTRIBUTE, jwtToken);
         }
 
         if (jwtToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {

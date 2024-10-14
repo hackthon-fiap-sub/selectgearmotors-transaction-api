@@ -1,8 +1,10 @@
 package br.com.selectgearmotors.transaction.gateway.payment;
 
+import br.com.selectgearmotors.transaction.commons.filter.JwtRequestFilter;
 import br.com.selectgearmotors.transaction.gateway.dto.PaymentDto;
 import br.com.selectgearmotors.transaction.gateway.dto.PaymentResponseDto;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,13 +15,16 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 public class PaymentWebClient {
 
+    private final HttpServletRequest request;
+
     @Value("${gateway.payment.url}")
     private String url;
 
     private final WebClient.Builder webClientBuilder;
     private WebClient webClient;
 
-    public PaymentWebClient(WebClient.Builder webClientBuilder) {
+    public PaymentWebClient(HttpServletRequest request, WebClient.Builder webClientBuilder) {
+        this.request = request;
         this.webClientBuilder = webClientBuilder;
     }
 
@@ -29,10 +34,14 @@ public class PaymentWebClient {
     }
 
     public PaymentResponseDto setPayment(PaymentDto paymentDto) {
+        // Pega o token armazenado no filtro
+        String bearerToken = (String) request.getAttribute(JwtRequestFilter.BEARER_TOKEN_ATTRIBUTE);
+
         try {
             log.info("Sending payment request: {}", paymentDto);
             return webClient.post()
                     .uri("/payments")
+                    .headers(headers -> headers.setBearerAuth(bearerToken))
                     .bodyValue(paymentDto)
                     .retrieve()
                     .bodyToMono(PaymentResponseDto.class)
