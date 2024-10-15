@@ -13,12 +13,12 @@ docker rmi $(docker images -qa) -f
 sudo sysctl -w vm.max_map_count=262144
 
 
-docker build -t rogeriofontes/selectgearmotors-transaction-api:v5 .
+docker build -t rogeriofontes/selectgearmotors-transaction-api:v6 .
 docker login
-docker push rogeriofontes/selectgearmotors-transaction-api:v5
+docker push rogeriofontes/selectgearmotors-transaction-api:v6
 
-docker pull rogeriofontes/selectgearmotors-transaction-api:v5
-docker run -p 9934:9934 selectgearmotors-transaction-api:v5
+docker pull rogeriofontes/selectgearmotors-transaction-api:v6
+docker run -p 9934:9934 selectgearmotors-transaction-api:v6
 docker run -p 9934:9934 --env-file .env -e SPRING_PROFILES_ACTIVE=dev rogeriofontes/selectgearmotors-transaction-api:v5
 
 ====
