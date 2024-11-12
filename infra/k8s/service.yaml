@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: api-gateway-transaction-service
   namespace: selectgearmotors-ns
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb" # Para Network Load Balancer (opcional)
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true" # Para um Load Balancer interno (opcional)
 spec:
   type: LoadBalancer
   ports:
