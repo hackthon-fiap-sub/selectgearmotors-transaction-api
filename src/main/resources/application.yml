@@ -56,6 +56,9 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY}
     region:
       static: us-east-1
+  h2:
+    console:
+      enabled: false
 swagger:
   api:
     url: ${SWAGGER_API_URL}
@@ -153,6 +156,9 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY}
     region:
       static: us-east-1
+  h2:
+    console:
+      enabled: false
 swagger:
   api:
     url: ${SWAGGER_API_URL}

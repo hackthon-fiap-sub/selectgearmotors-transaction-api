@@ -30,7 +30,7 @@ public class SqsConfig {
     @Value("${spring.cloud.aws.credentials.secret-key}")
     private String secretKey;
 
-    @Value("${spring.cloud.aws.region.static}")
+    @Value("${spring.cloud.region.static}")
     private String region;
 
     @Bean
