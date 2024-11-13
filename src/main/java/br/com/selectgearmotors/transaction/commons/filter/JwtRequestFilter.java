@@ -8,9 +8,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,8 +21,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-
-    public static final String BEARER_TOKEN_ATTRIBUTE = "BEARER_TOKEN";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,12 +34,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String email = null;
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
             // Remove "Bearer " para obter o token puro
-            httpRequest.setAttribute(BEARER_TOKEN_ATTRIBUTE, jwtToken);
         }
 
         if (jwtToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {

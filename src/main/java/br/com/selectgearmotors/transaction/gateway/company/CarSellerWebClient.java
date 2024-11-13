@@ -1,5 +1,6 @@
 package br.com.selectgearmotors.transaction.gateway.company;
 
+import br.com.selectgearmotors.transaction.commons.Constants;
 import br.com.selectgearmotors.transaction.commons.filter.JwtRequestFilter;
 import br.com.selectgearmotors.transaction.gateway.dto.CarSellerResponseDTO;
 import br.com.selectgearmotors.transaction.gateway.dto.ClientResponseDTO;
@@ -31,7 +32,7 @@ public class CarSellerWebClient {
 
     public CarSellerResponseDTO get(String carSellerCode) {
         // Pega o token armazenado no filtro
-        String bearerToken = (String) request.getAttribute(JwtRequestFilter.BEARER_TOKEN_ATTRIBUTE);
+        String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
 
         return webClient.get()
                 .uri("/car-sellers/code/{clientCode}", carSellerCode)

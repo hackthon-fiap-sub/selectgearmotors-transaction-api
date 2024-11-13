@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
                 contact = @Contact(
                         name = "Sevenfood Transaction API",
                         email = "contact@sevenfood.com.br",
-                        url = "https://sevenfood.com.br"
+                        url = "https://selectgearmotors.com.br"
                 ),
                 description = "OpenApi documentation for Spring Security",
-                title = "OpenApi specification - Mentor API",
+                title = "OpenApi specification - SelectGearMotors API",
                 version = "1.0",
                 license = @License(
                         name = "Licence name",

@@ -1,5 +1,6 @@
 package br.com.selectgearmotors.transaction.gateway.payment;
 
+import br.com.selectgearmotors.transaction.commons.Constants;
 import br.com.selectgearmotors.transaction.commons.filter.JwtRequestFilter;
 import br.com.selectgearmotors.transaction.gateway.dto.PaymentDto;
 import br.com.selectgearmotors.transaction.gateway.dto.PaymentResponseDto;
@@ -35,7 +36,7 @@ public class PaymentWebClient {
 
     public PaymentResponseDto setPayment(PaymentDto paymentDto) {
         // Pega o token armazenado no filtro
-        String bearerToken = (String) request.getAttribute(JwtRequestFilter.BEARER_TOKEN_ATTRIBUTE);
+        String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
 
         try {
             log.info("Sending payment request: {}", paymentDto);

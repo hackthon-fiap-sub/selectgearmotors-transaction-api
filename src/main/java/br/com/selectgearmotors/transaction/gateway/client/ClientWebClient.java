@@ -1,5 +1,6 @@
 package br.com.selectgearmotors.transaction.gateway.client;
 
+import br.com.selectgearmotors.transaction.commons.Constants;
 import br.com.selectgearmotors.transaction.commons.filter.JwtRequestFilter;
 import br.com.selectgearmotors.transaction.gateway.dto.ClientResponseDTO;
 import jakarta.annotation.PostConstruct;
@@ -30,7 +31,7 @@ public class ClientWebClient {
 
     public ClientResponseDTO get(String clientCode) {
         // Pega o token armazenado no filtro
-        String bearerToken = (String) request.getAttribute(JwtRequestFilter.BEARER_TOKEN_ATTRIBUTE);
+        String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
         return webClient.get()
                 .uri("/clients/code/{clientCode}", clientCode)
                 .headers(headers -> headers.setBearerAuth(bearerToken))
