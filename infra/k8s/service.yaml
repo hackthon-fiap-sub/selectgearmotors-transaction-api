@@ -10,7 +10,7 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: "TCP"
-      port: 9934
+      port: 80
       targetPort: 9934
   selector:
     app: selectgearmotors-transaction-api

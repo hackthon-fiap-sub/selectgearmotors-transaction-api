@@ -13,9 +13,9 @@ docker rmi $(docker images -qa) -f
 sudo sysctl -w vm.max_map_count=262144
 
 
-docker build -t rogeriofontes/selectgearmotors-transaction-api:v7 .
+docker build -t rogeriofontes/selectgearmotors-transaction-api:v8 .
 docker login
-docker push rogeriofontes/selectgearmotors-transaction-api:v7
+docker push rogeriofontes/selectgearmotors-transaction-api:v8
 
 docker pull rogeriofontes/selectgearmotors-transaction-api:v6
 docker run -p 9934:9934 selectgearmotors-transaction-api:v6
