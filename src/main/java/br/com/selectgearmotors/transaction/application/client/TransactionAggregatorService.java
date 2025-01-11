@@ -12,6 +12,7 @@ import br.com.selectgearmotors.transaction.gateway.client.ClientWebClient;
 import br.com.selectgearmotors.transaction.gateway.company.CarSellerWebClient;
 import br.com.selectgearmotors.transaction.gateway.dto.*;
 import br.com.selectgearmotors.transaction.gateway.payment.PaymentWebClient;
+import br.com.selectgearmotors.transaction.gateway.reservation.ReservationWebClient;
 import br.com.selectgearmotors.transaction.gateway.vehicle.VehicleWebClient;
 import br.com.selectgearmotors.transaction.infrastructure.entity.domain.TransactionStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,9 @@ public class TransactionAggregatorService {
     private final CarSellerWebClient carSellerWebClient;
     private final FindByIdTransactionPort findByIdTransactionPort;
     private final TransactionApiMapper transactionApiMapper;
+    private final ReservationWebClient reservationWebClient;
 
-    public TransactionAggregatorService(TransactionRepositoryAdapter transactionRepositoryAdapter, PaymentWebClient paymentWebClient, ClientWebClient clientWebClient, VehicleWebClient vehicleWebClient, CarSellerWebClient carSellerWebClient, FindByIdTransactionPort findByIdTransactionPort, TransactionApiMapper transactionApiMapper) {
+    public TransactionAggregatorService(TransactionRepositoryAdapter transactionRepositoryAdapter, PaymentWebClient paymentWebClient, ClientWebClient clientWebClient, VehicleWebClient vehicleWebClient, CarSellerWebClient carSellerWebClient, FindByIdTransactionPort findByIdTransactionPort, TransactionApiMapper transactionApiMapper, ReservationWebClient reservationWebClient) {
         this.transactionRepositoryAdapter = transactionRepositoryAdapter;
         this.paymentWebClient = paymentWebClient;
         this.clientWebClient = clientWebClient;
@@ -39,6 +41,7 @@ public class TransactionAggregatorService {
         this.carSellerWebClient = carSellerWebClient;
         this.findByIdTransactionPort = findByIdTransactionPort;
         this.transactionApiMapper = transactionApiMapper;
+        this.reservationWebClient = reservationWebClient;
     }
 
     public TransactionPaymentResponse createTransaction(TransactionCreateRequest request) {
@@ -47,6 +50,28 @@ public class TransactionAggregatorService {
             if (byVehicleCode != null) {
                 throw new IllegalStateException("Veículo já reservado para compra");
             }
+
+            if (request.getVehicleCode() == null) {
+                throw new IllegalStateException("Tipo de pessoa não informado");
+            }
+
+            if (request.getClientCode() == null) {
+                throw new IllegalStateException("Cliente não informado");
+            }
+
+            if (request.getCarSellerCode() == null) {
+                throw new IllegalStateException("Vendedor não informado");
+            }
+
+            ReservationResponseDTO reservationStatus = reservationWebClient.getStatus(request.getVehicleCode());
+            if (reservationStatus != null && reservationStatus.getStatusReservation().equals("SOLD")) {
+                throw new IllegalStateException("Veículo já vendido");
+            }
+
+            if (reservationStatus != null && !reservationStatus.getBuyerId().equals(request.getClientCode())) {
+                throw new IllegalStateException("Veículo já reservado para outro cliente!");
+            }
+
             // Buscar dados do veículo
             VehicleResponseDTO vehicleResponseDTO = getVehicleDTO(request.getVehicleCode());
             ClientResponseDTO clientResponseDTO = getClientDTO(request.getClientCode());
@@ -66,8 +91,15 @@ public class TransactionAggregatorService {
             Transaction transactionSaved = transactionRepositoryAdapter.save(transaction);
             transactionSaved.setPersonType(request.getPersonType());
             PaymentResponseDto paymentResponseDto = createPayment(transactionSaved);
-            transactionSaved.setTransactionStatus(paymentResponseDto.getTransactionStatus());
+            if (paymentResponseDto != null) {
+                transactionSaved.setTransactionStatus(paymentResponseDto.getTransactionStatus());
 
+                String vehicleCode = transactionSaved.getVehicleCode();
+                ReservationResponseDTO status = reservationWebClient.getStatus(vehicleCode);
+                reservationWebClient.setStatus(status.getId());
+
+                vehicleWebClient.setStatus(vehicleCode);
+            }
             TransactionResponse transactionResponse = transactionApiMapper.fromEntity(transactionSaved);
 
             return TransactionPaymentResponse.builder()

@@ -106,6 +106,8 @@ gateway:
     url: ${API_GATEWAY_VEHICLE_URL}
   payment:
     url: ${API_GATEWAY_PAYMENT_URL}
+  reservation:
+    url: ${API_GATEWAY_RESERVATION_URL}
 aws:
   queue:
     document:
@@ -206,6 +208,8 @@ gateway:
     url: ${API_GATEWAY_VEHICLE_URL}
   payment:
     url: ${API_GATEWAY_PAYMENT_URL}
+  reservation:
+    url: ${API_GATEWAY_RESERVATION_URL}
 aws:
   queue:
     document:

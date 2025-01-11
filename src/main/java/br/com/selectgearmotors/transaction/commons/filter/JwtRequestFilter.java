@@ -1,5 +1,6 @@
 package br.com.selectgearmotors.transaction.commons.filter;
 
+import br.com.selectgearmotors.transaction.commons.Constants;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -50,7 +51,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     email = decodedJWT.getClaim("email").asString();// Extrair o username do token
                 }
 
-
                 if (validateToken(decodedJWT)) {
                     // Aqui você pode construir uma autenticação personalizada, se necessário
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -60,6 +60,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     // Define a autenticação no SecurityContext para ser usada nas requisições
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                    // Adiciona o JWT decodificado como atributo no request
+                    request.setAttribute(Constants.BEARER_TOKEN_ATTRIBUTE, decodedJWT.getToken());
                 }
             } catch (JWTDecodeException e) {
                 // Token inválido ou malformado, então a requisição falha com 401 Unauthorized

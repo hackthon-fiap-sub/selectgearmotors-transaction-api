@@ -1,7 +1,7 @@
-package br.com.selectgearmotors.transaction.gateway.client;
+package br.com.selectgearmotors.transaction.gateway.reservation;
 
 import br.com.selectgearmotors.transaction.commons.Constants;
-import br.com.selectgearmotors.transaction.gateway.dto.ClientResponseDTO;
+import br.com.selectgearmotors.transaction.gateway.dto.ReservationResponseDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-public class ClientWebClient {
+public class ReservationWebClient {
 
     private final HttpServletRequest request;
 
-    @Value("${gateway.client.url}")
+    @Value("${gateway.reservation.url}")
     private String baseUrl;
 
     private WebClient webClient;
 
-    public ClientWebClient(HttpServletRequest request, WebClient.Builder webClientBuilder) {
+    public ReservationWebClient(HttpServletRequest request, WebClient.Builder webClientBuilder) {
         this.request = request;
         this.webClient = webClientBuilder.build();
     }
@@ -28,14 +28,28 @@ public class ClientWebClient {
         this.webClient = this.webClient.mutate().baseUrl(baseUrl).build();
     }
 
-    public ClientResponseDTO get(String clientCode) {
+    public ReservationResponseDTO getStatus(String vehicleCode) {
         // Pega o token armazenado no filtro
         String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
+
         return webClient.get()
-                .uri("/clients/code/{clientCode}", clientCode)
+                .uri("/reservations/vehicle/{vehicleCode}", vehicleCode)
                 .headers(headers -> headers.setBearerAuth(bearerToken))
                 .retrieve()
-                .bodyToMono(ClientResponseDTO.class)
+                .bodyToMono(ReservationResponseDTO.class)
                 .block();
     }
+
+    public void setStatus(Long id) {
+        // Pega o token armazenado no filtro
+        String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
+
+        webClient.put()
+                .uri("/reservations/{id}/sold", id)
+                .headers(headers -> headers.setBearerAuth(bearerToken))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
 }

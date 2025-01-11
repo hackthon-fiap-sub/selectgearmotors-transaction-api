@@ -17,5 +17,5 @@ create table transactions.tb_transaction (
 );
 
 CREATE UNIQUE INDEX constraint_vehicle_code ON transactions.tb_transaction(vehicle_code);
-CREATE UNIQUE INDEX constraint_car_seller_code ON transactions.tb_transaction(car_seller_code);
-CREATE UNIQUE INDEX constraint_client_code ON transactions.tb_transaction(client_code);
+--CREATE UNIQUE INDEX constraint_car_seller_code ON transactions.tb_transaction(car_seller_code);
+--CREATE UNIQUE INDEX constraint_client_code ON transactions.tb_transaction(client_code);
