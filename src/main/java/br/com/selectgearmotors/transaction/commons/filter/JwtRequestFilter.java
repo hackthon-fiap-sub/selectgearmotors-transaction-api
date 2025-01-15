@@ -62,7 +62,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                     // Adiciona o JWT decodificado como atributo no request
-                    request.setAttribute(Constants.BEARER_TOKEN_ATTRIBUTE, decodedJWT.getToken());
+                    //request.setAttribute(Constants.BEARER_TOKEN_ATTRIBUTE, decodedJWT.getToken());
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             } catch (JWTDecodeException e) {
                 // Token inválido ou malformado, então a requisição falha com 401 Unauthorized

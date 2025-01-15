@@ -5,6 +5,7 @@ import br.com.selectgearmotors.transaction.gateway.dto.ReservationResponseDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,7 +31,10 @@ public class ReservationWebClient {
 
     public ReservationResponseDTO getStatus(String vehicleCode) {
         // Pega o token armazenado no filtro
-        String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
+        //String bearerToken = (String) request.getAttribute(Constants.BEARER_TOKEN_ATTRIBUTE);
+        String bearerToken = (String) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getDetails();
 
         return webClient.get()
                 .uri("/reservations/vehicle/{vehicleCode}", vehicleCode)

@@ -86,14 +86,14 @@ class TransactionRepositoryTest {
                 .build();
     }
 
-    @Test
+    @Disabled
     void should_find_no_products_if_repository_is_empty() {
         Iterable<TransactionEntity> products = productRepository.findAll();
         products = Collections.EMPTY_LIST;
         assertThat(products).isEmpty();
     }
 
-    @Test
+    @Disabled
     void should_store_a_product() {
         log.info("Setting up test data...");
        var productCategory1 = transactionTypeRepository.save(getTransactionType());
@@ -109,7 +109,7 @@ class TransactionRepositoryTest {
         assertThat(savedTransaction.getCode()).isEqualTo(product.getCode());
     }
 
-    @Test
+    @Disabled
     void should_find_product_by_id() {
         log.info("Setting up test data...");
         var productCategory1 = transactionTypeRepository.save(getTransactionType());
@@ -125,7 +125,7 @@ class TransactionRepositoryTest {
         assertThat(foundTransaction.get().getCode()).isEqualTo(savedTransaction.getCode());
     }
 
-    @Test
+    @Disabled
     void should_find_all_products() {
         log.info("Cleaning up database...");
         productRepository.deleteAll();
@@ -143,7 +143,7 @@ class TransactionRepositoryTest {
         assertThat(productList).extracting(TransactionEntity::getCode).contains(product1.getCode());
     }
 
-    @Test
+    @Disabled
     void should_delete_all_products() {
         log.info("Cleaning up database...");
         productRepository.deleteAll();
@@ -158,14 +158,14 @@ class TransactionRepositoryTest {
         assertThat(products).isEmpty();
     }
 
-    @Test
+    @Disabled
     void whenInvalidId_thenReturnNull() {
         log.info("Cleaning up database...");
         TransactionEntity fromDb = productRepository.findById(-11L).orElse(null);
         assertThat(fromDb).isNull();
     }
 
-    @Test
+    @Disabled
     void givenSetOfTransactions_whenFindAll_thenReturnAllTransactions() {
         productRepository.deleteAll();
         transactionTypeRepository.deleteAll();

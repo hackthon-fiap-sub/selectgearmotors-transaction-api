@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.Set;
 
-@ControllerAdvice(annotations = RestController.class)
-@Order(Ordered.HIGHEST_PRECEDENCE + 5)
+@RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class GenericResourcesAdvice {
 
     @ExceptionHandler(Exception.class)
@@ -58,6 +58,48 @@ public class GenericResourcesAdvice {
 
         ErrorMessage errorMessage = createErrorMessage(message.toString());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(VehicleReservationFoundException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorMessage> handleVehicleReservationFoundException(final VehicleReservationFoundException ex) { //AlreadyExistsException
+        ErrorMessage errorMessage = createErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(VehicleCodeFoundException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorMessage> handleVehicleCodeFoundException(final VehicleCodeFoundException ex) { //AlreadyExistsException
+        ErrorMessage errorMessage = createErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ClientCodeFoundException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorMessage> handleClientCodeFoundException(final ClientCodeFoundException ex) { //AlreadyExistsException
+        ErrorMessage errorMessage = createErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CarSellerCodeFoundException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorMessage> handleCarSellerCodeFoundException(final CarSellerCodeFoundException ex) { //AlreadyExistsException
+        ErrorMessage errorMessage = createErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(VehicleReservationNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorMessage> handleVehicleReservationNotFoundException(final VehicleReservationNotFoundException ex) { //AlreadyExistsException
+        ErrorMessage errorMessage = createErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(VehicleSoldException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorMessage> handleVehicleSoldException(final VehicleSoldException ex) { //AlreadyExistsException
+        ErrorMessage errorMessage = createErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

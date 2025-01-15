@@ -4,7 +4,7 @@ import br.com.selectgearmotors.transaction.application.api.dto.request.Transacti
 import br.com.selectgearmotors.transaction.application.api.dto.request.TransactionRequest;
 import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionPaymentResponse;
 import br.com.selectgearmotors.transaction.application.api.dto.response.TransactionResponse;
-import br.com.selectgearmotors.transaction.application.api.exception.ResourceFoundException;
+import br.com.selectgearmotors.transaction.application.api.exception.*;
 import br.com.selectgearmotors.transaction.application.api.mapper.TransactionApiMapper;
 import br.com.selectgearmotors.transaction.application.client.TransactionAggregatorService;
 import br.com.selectgearmotors.transaction.application.client.dto.TransactionDTO;
@@ -58,7 +58,7 @@ public class TransactionResources {
     @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TransactionPaymentResponse> save(@Valid @RequestBody TransactionCreateRequest request) {
+    public ResponseEntity<TransactionPaymentResponse> save(@Valid @RequestBody TransactionCreateRequest request) throws VehicleReservationFoundException, VehicleCodeFoundException, ClientCodeFoundException, CarSellerCodeFoundException, VehicleReservationNotFoundException, VehicleSoldException {
         try {
             log.info("Chegada do objeto para ser salvo {}", request);
             TransactionPaymentResponse saved = transactionAggregatorService.createTransaction(request);

@@ -344,15 +344,21 @@
                         </goals>
                     </execution>
                     <execution>
+                        <id>jacoco-report-verify</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>jacoco-site</id>
                         <phase>package</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!-- attached to Maven test phase -->
                     <execution>
-                        <id>report</id>
+                        <id>jacoco-report-test</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
@@ -375,7 +381,6 @@
                 <executions>
                     <execution>
                         <id>generate-dependency-check-report</id>
-
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
@@ -384,6 +389,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
